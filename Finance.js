@@ -12,6 +12,7 @@ import {
 import MainView from './app/views/main';
 import SettingsView from './app/views/settings';
 import AddView from './app/views/add';
+import OverviewView from './app/views/overview'
 
 // @todo remove when RN upstream is fixed
 console.ignoredYellowBox = [
@@ -21,9 +22,10 @@ console.ignoredYellowBox = [
 
 const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
-    <Scene key="main" title="Main" component={MainView} initial={true} />
+    <Scene key="main" title="Main" component={MainView} />
     <Scene key="settings" direction="vertical" title="Stocks" component={SettingsView} />
     <Scene key="add" direction="vertical" title="Add" component={AddView} />
+    <Scene key="overview" direction="vertical" title="Overview" component={OverviewView}  initial={true}  />
   </Scene>
 );
 

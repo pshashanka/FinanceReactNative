@@ -183,6 +183,13 @@ export default class Main extends React.Component {
           </View>
           <TouchableHighlight
             style={styles.settings}
+            onPress={Actions.overview}
+            underlayColor="#202020"
+          >
+            <Text style={styles.marketTimeText}>Overview</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.settings}
             onPress={Actions.settings}
             underlayColor="#202020"
           >
