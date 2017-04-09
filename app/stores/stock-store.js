@@ -14,7 +14,6 @@ class StockStore {
     const that = this;
     store.get('watchlist').then((watchlist) => {
       store.get('watchlistResult').then((watchlistResult) => {
-        console.log('From store watchlist:', watchlist);
         if (!watchlist || !Array.isArray(watchlist)) {
           watchlist = [
             { symbol: 'AAPL', share: 100 },
@@ -31,20 +30,55 @@ class StockStore {
       });
     });
 
+    const indexList = [
+      { symbol: '^IXIC', share: 100 },
+      { symbol: '^GSPC', share: 100 },
+      { symbol: 'DIA', share: 100 }
+    ]
+
+    store.save('indexList', indexList);
+
+    this.state = {
+      indexList,
+      indexResult: {},
+      watchlist: [],
+      watchlistResult: {},
+      selectedStock: {},
+      selectedProperty: 'ChangeinPercent',
+    };
+
     this.bindListeners({
       handleUpdateStocks: StockActions.UPDATE_STOCKS,
       handleAddStock: StockActions.ADD_STOCK,
       handleDeleteStock: StockActions.DELETE_STOCK,
       handleSelectStock: StockActions.SELECT_STOCK,
       handleSelectProperty: StockActions.SELECT_PROPERTY,
+      handleUpdateIndexes: StockActions.UPDATE_INDEXES
     });
 
-    this.state = {
-      watchlist: [],
-      watchlistResult: {},
-      selectedStock: {},
-      selectedProperty: 'ChangeinPercent',
-    };
+    this.handleUpdateIndexes()
+  }
+
+  handleUpdateIndexes() {
+    const symbols = this.state.indexList.map(item => item.symbol.toUpperCase());
+    const that = this;
+    finance.getStock({ stock: symbols }, 'quotes')
+      .then(response => response.json())
+      .then((json) => {
+        let quotes = json.query.results.quote;
+        quotes = Array.isArray(quotes) ? quotes : [quotes];
+
+        const indexResult = {};
+        quotes.forEach((quote) => {
+          indexResult[quote.symbol] = quote;
+        });
+        store.save('indexResult', indexResult);
+        that.setState({ indexResult });
+      }).catch((error) => {
+        console.log('Request failed', error);
+        store.get('indexResult')
+        .then(indexResult => that.setState({ indexResult }));
+      });
   }
 
   handleUpdateStocks() {

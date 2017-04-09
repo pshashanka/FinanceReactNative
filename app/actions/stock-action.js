@@ -1,6 +1,11 @@
 import alt from '../alt';
 
 class StockActions {
+
+  updateIndexes() {
+    return true;
+  }
+
   updateStocks() {
     return true;
   }
